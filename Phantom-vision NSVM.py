@@ -268,7 +268,7 @@ def OverlapCheck(trajectory,steprad,pointnum): #parametri: array točk trajektor
         else:
             count=0
     if overlap:
-        trajectory=trajectory[:ii-pointnum+1]
+        trajectory=trajectory[:ii-pointnum+2]
         print(f"OVERLAP found:   {ii} ")
     return(trajectory)
 
@@ -331,14 +331,14 @@ trajektorijaIMG = []
 def trajectory(): ###zaznava trajektorije
     global trajektorijaC, trajektorijaIMG
     ret, frame = cam.read()
-    img=np.copy(frame[center_platforme[0]-int(image_range[0]*obmocjeTrajektorije):center_platforme[0]+int(image_range[0]*obmocjeTrajektorije),center_platforme[1]-int(image_range[1]*obmocjeTrajektorije):center_platforme[1]+int(image_range[1]*obmocjeTrajektorije)])
-    kernel_rad=9 # simpledialog.askinteger("Input number", "Enter kernel radius (9)")
+    img=np.copy(frame[center_platforme[0]-int(image_range[0]*obmocjeTrajektorije):center_platforme[0]+int(image_range[0]*obmocjeTrajektorije)+1,center_platforme[1]-int(image_range[1]*obmocjeTrajektorije):center_platforme[1]+int(image_range[1]*obmocjeTrajektorije)+1])
+    kernel_rad= simpledialog.askinteger("Input number", "Enter kernel radius (9)")
     step_rad=kernel_rad #simpledialog.askinteger("Input number", "Enter interpolation radius (9)")
-    overlap_thresh=5 # simpledialog.askinteger("Input number", "Min number of consecutive near points (4)")
+    overlap_thresh=simpledialog.askinteger("Input number", "Min number of consecutive near points (5)")
     print(img.shape)
     trajectory=traj(img,step_rad,kernel_rad,overlap_thresh,0.0) ##Robustno pri kernel radius = 6
     print(f"Skupna dolžina trajektorije: {len(trajectory)} ")
-    #trajectory=OverlapCheck(trajectory,kernel_rad,5)
+    #trajectory=OverlapCheck(trajectory,kernel_rad,overlap_thresh)
     img=pltTraj(img,trajectory)
     plt.figure(5)
     cv.imshow("slika trajektorije",img)
@@ -354,9 +354,11 @@ cam = cv.VideoCapture(0)
 
 
 
-def run(): ###self explanatory
+def run():
     global a
     a = True
+    
+    #Možnost shranjevanja videa v datoteko:
     #fourcc = cv.VideoWriter_fourcc(*'XVID')
     #out = cv.VideoWriter('outputFast.avi', fourcc, 20.0, (2*image_range[1],2*image_range[0]))
     
@@ -372,7 +374,7 @@ def run(): ###self explanatory
     
     while(a):
         ret, frame = cam.read()
-        frame=frame[center_platforme[0]-image_range[0]:center_platforme[0]+image_range[0],center_platforme[1]-image_range[1]:center_platforme[1]+image_range[1]]
+        frame=frame[center_platforme[0]-image_range[0]:center_platforme[0]+image_range[0]+1,center_platforme[1]-image_range[1]:center_platforme[1]+image_range[1]+1]
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
         gray = cv.GaussianBlur(gray,(5,5),cv.BORDER_DEFAULT)
         circles = cv.HoughCircles(gray,cv.HOUGH_GRADIENT,2,20,param1=54,param2=10,minRadius=minR,maxRadius=maxR)## Iskanje žogice
@@ -432,16 +434,6 @@ def stop():
     var4.set("")
     var5.set("")
     var7.set("Stopped")
-    
-    
-def make_label(master, x, y, w, h, img, *args, **kwargs):
-    f = Frame(master, height = h, width = w)
-    f.pack_propagate(0) 
-    f.place(x = x, y = y)
-    label = Label(f, image = img, *args, **kwargs)
-    label.pack(fill = BOTH, expand = 1)
-    return label
-
 
 root.title("Robotski Vid / Vodenje robotov")
 var1 = StringVar()
