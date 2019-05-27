@@ -461,8 +461,7 @@ label3 = Label(root, textvariable = var3, fg = "green").grid(row = 3, column = 2
 
 Button4 = Button(root, text = "Vodi po trajektoriji", width = 20, bg = "green", command = lambda: Thread(target = run).start()).grid(row = 4, column = 0, columnspan = 2)
 
-Button5 = Button(root, text = "Vodi do centra", width = 20, bg = "blue", fg = "white", command = lambda: Thread(target = center).start()).grid(row = 4, column = 2, columnspan = 2)
-Button5 = Button(root, text = "Close", width = 15, bg = "red", command = stop).grid(row = 4, column = 4)
+Button5 = Button(root, text = "Stop", width = 15, bg = "red", command = stop).grid(row = 4, column = 4)
 
 label4 = Label(root, textvariable = var4).grid(row = 5, column = 0, columnspan = 2)
 label5 = Label(root, textvariable = var5).grid(row = 5, column = 2, columnspan = 2)
@@ -471,6 +470,6 @@ label5 = Label(root, textvariable = var7).grid(row = 5, column = 4)
 label61 = Label(root, text = "Poslane spr.").grid(row = 0, column = 4)
 label6 = Label(root, textvariable = var6).grid(row = 1, column = 4, rowspan = 3)
 
-label7 = Label(root, text = "Ob kliku na določeno obliko vodenja, ne moremo več spreminjati oblike \n--> Potreben je restart python programa in ponovna kalibracija").grid(row = 6, column = 0, columnspan = 5)
+label7 = Label(root, text = "Ob kliku na gumb Stop je potreben ponoven zagon programa in ponovna kalibracija").grid(row = 6, column = 0, columnspan = 5)
 
 root.mainloop()
