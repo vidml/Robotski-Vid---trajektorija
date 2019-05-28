@@ -1,4 +1,3 @@
-
 #center_platforme=[240, 312]
 #image_range=[180,180]
 center_platforme=[380,260]  # Offline params
@@ -382,11 +381,13 @@ def run():
         tim = time.time()
         trun=tim-start_time
         vodi_index=int(math.floor(trun/vodi_dt))
-        if vodi_index<len(trajektorijaC):
-            ref=[trajektorijaC[vodi_index][0]*faktor,trajektorijaC[vodi_index][1]*faktor]
+        if (int(vodi_index)<len(trajektorijaC)):
+            ref=[trajektorijaC[vodi_index][0],trajektorijaC[vodi_index][1]]
+            IMGref=[trajektorijaIMG[vodi_index][0],trajektorijaIMG[vodi_index][1]]
         else:
             ref=[0,0]
-        cv.circle(frame,(trajektorijaIMG[vodi_index][0],trajektorijaIMG[vodi_index][1]),2,(0,0,255),4)
+            IMGref=image_range[::-1]
+        cv.circle(frame,(IMGref[0],IMGref[1]),2,(0,0,255),4)
         try:
             cv.circle(frame,(circles[0,0,0],circles[0,0,1]),minR,(0,0,255),1)
             cv.circle(frame,(circles[0,0,0],circles[0,0,1]),circles[0,0,2],(255,0,0),1)
@@ -396,8 +397,8 @@ def run():
             der[1]=(circles[0,0,1]-cent_prev[1])/(tim-last_time)
             cent_prev=circles[0,0]
             if dist((circles[0,0,0],circles[0,0,1]),(image_range[0],image_range[1]))<maxradij:
-                cv.line(frame, (trajektorijaIMG[vodi_index][0],trajektorijaIMG[vodi_index][1]), (circles[0,0,0],circles[0,0,1]), (0,255,0),3)
-                vals = np.array([ref[0], ref[1], (circles[0,0,0]-image_range[0])-trajektorijaC[vodi_index][0], (circles[0,0,1]-image_range[1])-trajektorijaC[vodi_index][1],der[0],der[1]])
+                cv.line(frame, (IMGref[0],IMGref[1]), (circles[0,0,0],circles[0,0,1]), (0,255,0),3)
+                vals = np.array([ref[0]*faktor, ref[1]*faktor, (circles[0,0,0]-image_range[0])-ref[0], (circles[0,0,1]-image_range[1])-ref[1],der[0],der[1]])
                 vals = vals.reshape(6,1)
                 bin_vals = struct.pack('<6f',*vals)
                 s.send(bin_vals)
